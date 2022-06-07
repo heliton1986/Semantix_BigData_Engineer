@@ -1,0 +1,74 @@
+Spark - Exercícios da API Catalog
+
+Realizar os exercícios usando a API Catalog.
+
+1. Visualizar todos os banco de dados
+
+ spark.catalog.listDatabases.show(false)
++-------+---------------------+---------------------------------------------------+
+|name   |description          |locationUri
+            |
++-------+---------------------+---------------------------------------------------+
+|default|Default Hive database|hdfs://namenode:8020/user/hive/warehouse           |
+|heliton|                     |hdfs://namenode:8020/user/hive/warehouse/heliton.db|
++-------+---------------------+---------------------------------------------------+
+
+2. Definir o banco de dados “seu-nome” como principal
+
+spark.catalog.setCurrentDatabase("heliton")
+
+3. Visualizar todas as tabelas do banco de dados “seu-nome”
+
+spark.catalog.listTables.show(false)
++------------------+--------+----------------------------------------+---------+-----------+
+|name              |database|description                             |tableType|isTemporary|
++------------------+--------+----------------------------------------+---------+-----------+
+|nascimento        |heliton |null                                    |EXTERNAL |false      |
+|pop               |heliton |null                                    |MANAGED  |false      |
+|pop_parquet       |heliton |null                                    |MANAGED  |false      |
+|pop_parquet_snappy|heliton |null                                    |MANAGED  |false      |
+|tab_alunos        |heliton |null                                    |MANAGED  |false      |
+|tab_juros_selic   |heliton |null                                    |MANAGED  |false      |
+|titles            |heliton |Imported by sqoop on 2022/06/02 15:46:09|MANAGED  |false      |
++------------------+--------+----------------------------------------+---------+-----------+
+
+4. Visualizar as colunas da tabela tab_alunos
+
+spark.catalog.listColumns("tab_alunos").show()
++-----------------+-----------+--------+--------+-----------+--------+
+|             name|description|dataType|nullable|isPartition|isBucket|
++-----------------+-----------+--------+--------+-----------+--------+
+|      id_discente|       null|     int|    true|      false|   false|
+|             nome|       null|  string|    true|      false|   false|
+|     ano_ingresso|       null|     int|    true|      false|   false|
+| periodo_ingresso|       null|     int|    true|      false|   false|
+|            nivel|       null|  string|    true|      false|   false|
+|id_forma_ingresso|       null|     int|    true|      false|   false|
+|         id_curso|       null|     int|    true|      false|   false|
++-----------------+-----------+--------+--------+-----------+--------+
+
+5.  Visualizar os 10 primeiros registos da tabela "tab_alunos" com uso do spark.sql
+
+spark.sql("select * from tab_alunos limit 10").show(false)
++-----------+---------------------------------+------------+----------------+-----+-----------------+--------+
+|id_discente|nome                             |ano_ingresso|periodo_ingresso|nivel|id_forma_ingresso|id_curso|
++-----------+---------------------------------+------------+----------------+-----+-----------------+--------+
+|18957      |ABELARDO DA SILVA COELHO         |2017        |1               |G    |62151            |76995   |
+|553        |ABIEL GODOY MARIANO              |2015        |null            |M    |2081113          |3402    |
+|17977      |ABIGAIL ANTUNES SALERNO FAN      |2017        |1               |T    |2081111          |759711  |
+|16613      |ABIGAIL FERNANDA MALHEIROS BRASIL|2017        |null            |M    |37350            |1222    |
+|17398      |ABIGAIL JOSIANE RIL ROCHA        |2017        |null            |M    |37350            |5041    |
+|26880      |ABIMAEL CHRISTOPFER WESCHENFELDER|2019        |1               |T    |2081115          |1913420 |
+|28508      |ABNER NUNES PERES                |2019        |1               |G    |37350            |181097  |
+|18693      |ACSA PEREIRA RODRIGUES           |2017        |1               |G    |62151            |77498   |
+|28071      |ACSA ROBALO DOS SANTOS           |2019        |1               |T    |2081115          |3996007 |
+|21968      |AÇUCENA CARVALHO NUNES           |2018        |0               |N    |2081113          |2399357 |
++-----------+---------------------------------+------------+----------------+-----+-----------------+--------+
+
+
+
+
+
+
+
+

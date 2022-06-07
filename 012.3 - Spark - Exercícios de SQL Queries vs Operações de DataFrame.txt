@@ -1,0 +1,161 @@
+Spark - Exercícios de SQL Queries vs Operações de DataFrame
+
+Realizar as seguintes consultas usando SQL queries e transformações de DataFrame na tabela “tab_alunos” no banco de dados <nome>
+
+spark.catalog.listColumns("tab_alunos").show()
+
+1. Visualizar o id e nome dos 5 primeiros registros
+
+spark.sql("select id_discente, nome from tab_alunos limit 5").show(false)
++-----------+---------------------------------+
+|id_discente|nome                             |
++-----------+---------------------------------+
+|18957      |ABELARDO DA SILVA COELHO         |
+|553        |ABIEL GODOY MARIANO              |
+|17977      |ABIGAIL ANTUNES SALERNO FAN      |
+|16613      |ABIGAIL FERNANDA MALHEIROS BRASIL|
+|17398      |ABIGAIL JOSIANE RIL ROCHA        |
++-----------+---------------------------------+
+
+val alunosHiveDF = spark.read.table("tab_alunos")
+alunosHiveDF.select("id_discente","nome").limit(5).show(false)
++-----------+---------------------------------+
+|id_discente|nome                             |
++-----------+---------------------------------+
+|18957      |ABELARDO DA SILVA COELHO         |
+|553        |ABIEL GODOY MARIANO              |
+|17977      |ABIGAIL ANTUNES SALERNO FAN      |
+|16613      |ABIGAIL FERNANDA MALHEIROS BRASIL|
+|17398      |ABIGAIL JOSIANE RIL ROCHA        |
++-----------+---------------------------------+
+
+2. Visualizar o id, nome e ano quando o ano de ingresso for maior ou igual a 2018
+
+spark.sql("select id_discente,nome,ano_ingresso from tab_alunos where ano_ingresso >= 2018").show(false)
++-----------+-------------------------------------+------------+
+|id_discente|nome                                 |ano_ingresso|
++-----------+-------------------------------------+------------+
+|26880      |ABIMAEL CHRISTOPFER WESCHENFELDER    |2019        |
+|28508      |ABNER NUNES PERES                    |2019        |
+|28071      |ACSA ROBALO DOS SANTOS               |2019        |
+|21968      |AÇUCENA CARVALHO NUNES               |2018        |
+|22374      |ADALBERTO LUFT LUNARDI               |2018        |
+|26367      |ADALBERTO SEIDEL CONY                |2019        |
+|25120      |ADÃO VAGNER DOS SANTOS MOTA          |2018        |
+|24787      |ADELITA ALVES SILVEIRA               |2018        |
+|28001      |ADEMIR LUIZ SCHENATTO                |2019        |
+|21618      |ADENIR CALLEGARO                     |2018        |
+|27346      |ADILSON HAAS                         |2019        |
+|21569      |ADILSON LOPES DA ROSA                |2018        |
+|24456      |ADILSON MARTINS DE OLIVEIRA          |2018        |
+|24958      |ADIR JOSÉ HECHMANN                   |2018        |
+|25805      |ADRIANA CLARICE HENNING              |2018        |
+|27021      |ADRIANA GÖTENS ANTUNES               |2019        |
+|25968      |ADRIANA MAGALHÃES VEIGA DE BROUTELLES|2018        |
+|27232      |ADRIANA PAIVA GÜLLICH DE LEMES       |2019        |
+|21247      |ADRIANA PERES FERREIRA               |2018        |
+|27223      |ADRIANA PIRAN                        |2019        |
++-----------+-------------------------------------+------------+
+
+alunosHiveDF.select("id_discente","nome","ano_ingresso").where("ano_ingresso >= 2018").show(false)
++-----------+-------------------------------------+------------+
+|id_discente|nome                                 |ano_ingresso|
++-----------+-------------------------------------+------------+
+|26880      |ABIMAEL CHRISTOPFER WESCHENFELDER    |2019        |
+|28508      |ABNER NUNES PERES                    |2019        |
+|28071      |ACSA ROBALO DOS SANTOS               |2019        |
+|21968      |AÇUCENA CARVALHO NUNES               |2018        |
+|22374      |ADALBERTO LUFT LUNARDI               |2018        |
+|26367      |ADALBERTO SEIDEL CONY                |2019        |
+|25120      |ADÃO VAGNER DOS SANTOS MOTA          |2018        |
+|24787      |ADELITA ALVES SILVEIRA               |2018        |
+|28001      |ADEMIR LUIZ SCHENATTO                |2019        |
+|21618      |ADENIR CALLEGARO                     |2018        |
+|27346      |ADILSON HAAS                         |2019        |
+|21569      |ADILSON LOPES DA ROSA                |2018        |
+|24456      |ADILSON MARTINS DE OLIVEIRA          |2018        |
+|24958      |ADIR JOSÉ HECHMANN                   |2018        |
+|25805      |ADRIANA CLARICE HENNING              |2018        |
+|27021      |ADRIANA GÖTENS ANTUNES               |2019        |
+|25968      |ADRIANA MAGALHÃES VEIGA DE BROUTELLES|2018        |
+|27232      |ADRIANA PAIVA GÜLLICH DE LEMES       |2019        |
+|21247      |ADRIANA PERES FERREIRA               |2018        |
+|27223      |ADRIANA PIRAN                        |2019        |
++-----------+-------------------------------------+------------+
+only showing top 20 rows
+
+
+
+3. Visualizar por ordem alfabética do nome o id, nome e ano quando o ano de ingresso for maior ou igual a 2018
+
+ spark.sql("select id_discente,nome,ano_ingresso from tab_alunos where ano_ingresso >= 2018 order by nome desc").show(false)
++-----------+-------------------------------+------------+
+|id_discente|nome                           |ano_ingresso|
++-----------+-------------------------------+------------+
+|24161      |ÍTALO CARPES DA COSTA          |2018        |
+|23789      |ÍGOR ANTONINI HORN             |2018        |
+|25323      |ÊNDREO SANTOS SEEVALD          |2018        |
+|22611      |ÊNDREO DE CARVALHO ROHR        |2018        |
+|22759      |ÊMILY MANUELA DE OLIVEIRA LEAL |2018        |
+|26310      |ÉVELYN SOLENE DE FREITAS SCCOTI|2019        |
+|26921      |ÉVELYN PAZ GONÇALVES           |2019        |
+|26576      |ÉVELIN LUÍZA MION CHAGAS       |2019        |
+|22341      |ÉVELIN DA ROSA                 |2018        |
+|23718      |ÉRICSSON LIMA DA ROSA          |2018        |
+|26262      |ÉRICA SILVA VEIGA              |2019        |
+|27781      |ÉRICA PRADO DE ALMEIDA         |2019        |
+|24923      |ÉRICA MELLO DOS SANTOS         |2018        |
+|26266      |ÉRICA DA ROSA PINTO            |2019        |
+|28255      |ÉRICA BERTOLDO DA SILVA        |2019        |
+|27927      |ÉRIC SCHUSTER PARCIANELLO      |2019        |
+|25189      |ÉRIC RANIE CONTESSA RAMOS      |2018        |
+|23031      |ÉRIC BARBOSA ROCHA             |2018        |
+|26430      |ÉMERSON SILVA DOS SANTOS       |2019        |
+|23223      |ÉMERSON SAMUEL DA SILVA        |2018        |
++-----------+-------------------------------+------------+
+only showing top 20 rows
+
+alunosHiveDF.select("id_discente","nome","ano_ingresso").where("ano_ingresso >= 2018").orderBy($"nome".desc).show(false)
++-----------+-------------------------------+------------+
+|id_discente|nome                           |ano_ingresso|
++-----------+-------------------------------+------------+
+|24161      |ÍTALO CARPES DA COSTA          |2018        |
+|23789      |ÍGOR ANTONINI HORN             |2018        |
+|25323      |ÊNDREO SANTOS SEEVALD          |2018        |
+|22611      |ÊNDREO DE CARVALHO ROHR        |2018        |
+|22759      |ÊMILY MANUELA DE OLIVEIRA LEAL |2018        |
+|26310      |ÉVELYN SOLENE DE FREITAS SCCOTI|2019        |
+|26921      |ÉVELYN PAZ GONÇALVES           |2019        |
+|26576      |ÉVELIN LUÍZA MION CHAGAS       |2019        |
+|22341      |ÉVELIN DA ROSA                 |2018        |
+|23718      |ÉRICSSON LIMA DA ROSA          |2018        |
+|26262      |ÉRICA SILVA VEIGA              |2019        |
+|27781      |ÉRICA PRADO DE ALMEIDA         |2019        |
+|24923      |ÉRICA MELLO DOS SANTOS         |2018        |
+|26266      |ÉRICA DA ROSA PINTO            |2019        |
+|28255      |ÉRICA BERTOLDO DA SILVA        |2019        |
+|27927      |ÉRIC SCHUSTER PARCIANELLO      |2019        |
+|25189      |ÉRIC RANIE CONTESSA RAMOS      |2018        |
+|23031      |ÉRIC BARBOSA ROCHA             |2018        |
+|26430      |ÉMERSON SILVA DOS SANTOS       |2019        |
+|23223      |ÉMERSON SAMUEL DA SILVA        |2018        |
++-----------+-------------------------------+------------+
+
+4. Contar a quantidade de registros do item anterior
+
+spark.sql("select count(id_discente) from tab_alunos where ano_ingresso >= 2018").sho
+w()
++------------------+
+|count(id_discente)|
++------------------+
+|              4266|
++------------------+
+
+alunosHiveDF.select("id_discente","nome","ano_ingresso").where("ano_ingresso >= 2018").orderBy($"nome".desc).count()
+res41: Long = 4266
+
+
+
+
+
+

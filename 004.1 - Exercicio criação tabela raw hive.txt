@@ -1,0 +1,124 @@
+1. Enviar o arquivo local “/input/exercises-data/populacaoLA/populacaoLA.csv” para o diretório no HDFS “/user/aluno/<nome>/data/populacao”
+
+ hdfs dfs -mkdir /user/aluno/heliton/data/populacao
+ hdfs dfs -put /input/exercises-data/populacaoLA/populacaoLA.csv /user/aluno/heliton/data/populacao/
+
+2. Listar os bancos de dados no Hive
+ 
+ docker exec -it hive-server bash
+ beeline --help
+ beeline -u jdbc:hive2://localhost:10000
+ 
+ show databases;
++----------------+
+| database_name  |
++----------------+
+| default        |
++----------------+
+
+3. Criar o banco de dados <nome>
+ 
+ create database heliton;
+
+ show databases;
++----------------+
+| database_name  |
++----------------+
+| default        |
+| heliton        |
++----------------+
+
+4. Criar a Tabela Hive no BD <nome>
+
+Tabela interna: pop
+Campos:
+zip_code - int
+total_population - int
+median_age - float
+total_males - int
+total_females - int
+total_households - int
+average_household_size - float
+Propriedades
+Delimitadores: Campo ‘,’ | Linha ‘\n’
+Sem Partição
+Tipo do arquivo: Texto
+tblproperties("skip.header.line.count"="1")’
+
+
+use heliton;
+
+create table pop (
+zip_code int,
+total_population int,
+median_age float,
+total_males int,
+total_females int,
+total_households int,
+average_household_size float
+)
+row format delimited
+fields terminated by ','
+lines terminated by '\n'
+stored as textfile
+tblproperties("skip.header.line.count"="1");
+
+5. Visualizar a descrição da tabela pop
+
+desc pop;
++-------------------------+------------+----------+
+|        col_name         | data_type  | comment  |
++-------------------------+------------+----------+
+| zip_code                | int        |          |
+| total_population        | int        |          |
+| median_age              | float      |          |
+| total_males             | int        |          |
+| total_females           | int        |          |
+| total_households        | int        |          |
+| average_household_size  | float      |          |
++-------------------------+------------+----------+
+
+desc formatted pop;
++-------------------------------+----------------------------------------------------+-----------------------------+
+|           col_name            |                     data_type                      |           comment           |
++-------------------------------+----------------------------------------------------+-----------------------------+
+| # col_name                    | data_type                                          | comment                     |
+|                               | NULL                                               | NULL                        |
+| zip_code                      | int                                                |                             |
+| total_population              | int                                                |                             |
+| median_age                    | float                                              |                             |
+| total_males                   | int                                                |                             |
+| total_females                 | int                                                |                             |
+| total_households              | int                                                |                             |
+| average_household_size        | float                                              |                             |
+|                               | NULL                                               | NULL                        |
+| # Detailed Table Information  | NULL                                               | NULL                        |
+| Database:                     | heliton                                            | NULL                        |
+| Owner:                        | root                                               | NULL                        |
+| CreateTime:                   | Fri May 20 16:38:44 UTC 2022                       | NULL                        |
+| LastAccessTime:               | UNKNOWN                                            | NULL                        |
+| Retention:                    | 0                                                  | NULL                        |
+| Location:                     | hdfs://namenode:8020/user/hive/warehouse/heliton.db/pop | NULL                        |
+| Table Type:                   | MANAGED_TABLE                                      | NULL                        |
+| Table Parameters:             | NULL                                               | NULL                        |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\"}  |
+|                               | numFiles                                           | 0                           |
+|                               | numRows                                            | 0                           |
+|                               | rawDataSize                                        | 0                           |
+|                               | skip.header.line.count                             | 1                           |
+|                               | totalSize                                          | 0                           |
+|                               | transient_lastDdlTime                              | 1653064724                  |
+|                               | NULL                                               | NULL                        |
+| # Storage Information         | NULL                                               | NULL                        |
+| SerDe Library:                | org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe | NULL                        |
+| InputFormat:                  | org.apache.hadoop.mapred.TextInputFormat           | NULL                        |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat | NULL                        |
+| Compressed:                   | No                                                 | NULL                        |
+| Num Buckets:                  | -1                                                 | NULL                        |
+| Bucket Columns:               | []                                                 | NULL                        |
+| Sort Columns:                 | []                                                 | NULL                        |
+| Storage Desc Params:          | NULL                                               | NULL                        |
+|                               | field.delim                                        | ,                           |
+|                               | line.delim                                         | \n                          |
+|                               | serialization.format                               | ,                           |
++-------------------------------+----------------------------------------------------+-----------------------------+

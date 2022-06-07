@@ -1,0 +1,145 @@
+Sqoop - Importação BD Employees- Otimização
+
+Realizar com uso do MySQL
+
+1. Criar a tabela cp_titles_date, contendo a cópia da tabela titles com os campos title e to_date
+
+create table cp_titles_date
+select title, to_date from titles;
+
+2. Pesquisar os 15 primeiros registros da tabela cp_titles_date
+
+select * from cp_titles_date limit 15;
++--------------------+------------+
+| title              | to_date    |
++--------------------+------------+
+| Senior Engineer    | 9999-01-01 |
+| Staff              | 9999-01-01 |
+| Senior Engineer    | 9999-01-01 |
+| Engineer           | 1995-12-01 |
+| Senior Engineer    | 9999-01-01 |
+| Senior Staff       | 9999-01-01 |
+| Staff              | 1996-09-12 |
+| Senior Engineer    | 9999-01-01 |
+| Senior Staff       | 9999-01-01 |
+| Staff              | 1996-02-11 |
+| Assistant Engineer | 2000-07-31 |
+| Assistant Engineer | 1990-02-18 |
+| Engineer           | 1995-02-18 |
+| Senior Engineer    | 9999-01-01 |
+| Engineer           | 9999-01-01 |
++--------------------+------------+
+
+3. Alterar os registros do campo to_date para null da tabela cp_titles_date, quando o título for igual a Staff
+
+update cp_titles_date
+set to_date = null
+where title = 'Staff';
+
+Realizar com uso do Sqoop - Importações no warehouse /user/hive/warehouse/db_test_<numero_questao> e visualizar no HDFS
+
+4. Importar a tabela titles com 8 mapeadores no formato parquet
+
+sqoop import --table titles \
+--connect jdbc:mysql://database/employees \
+--username root \
+--password secret \
+-m 8 --as-parquetfile \
+--warehouse-dir /user/hive/warehouse/db_test2_4
+
+5. Importar a tabela titles com 8 mapeadores no formato parquet e compressão snappy
+
+sqoop import --table titles \
+--connect jdbc:mysql://database/employees \
+--username root \
+--password secret \
+-m 8 --as-parquetfile \
+--warehouse-dir /user/hive/warehouse/db_test2_5 \
+--compress --compression-codec org.apache.hadoop.io.compress.SnappyCodec
+
+6. Importar a tabela cp_titles_date com 4 mapeadores (erro)
+
+Importar a tabela cp_titles_date com 4 mapeadores divididos pelo campo título no warehouse /user/hive/warehouse/db_test2_title
+
+sqoop import -Dorg.apache.sqoop.splitter.allow_text_splitter=true \
+--table cp_titles_date \
+--connect jdbc:mysql://database/employees \
+--username root \
+--password secret -m 4 \
+--warehouse-dir /user/hive/warehouse/db_test2_title \
+--split-by title
+
+Importar a tabela cp_titles_date com 4 mapeadores divididos pelo campo data no warehouse /user/hive/warehouse/db_test2_date
+
+sqoop import -Dorg.apache.sqoop.splitter.allow_text_splitter=true \
+--table cp_titles_date \
+--connect jdbc:mysql://database/employees \
+--username root \
+--password secret -m 4 \
+--warehouse-dir /user/hive/warehouse/db_test2_date \
+--split-by to_date
+
+Qual a diferença dos registros nulos entre as duas importações?
+
+hdfs dfs -count -h /user/hive/warehouse/db_test2_date
+           2            5              7.7 M /user/hive/warehouse/db_test2_date
+
+hdfs dfs -ls -h -R /user/hive/warehouse/db_test2_date
+drwxr-xr-x   - root supergroup          0 2022-05-31 20:31 /user/hive/warehouse/db_test2_date/cp_titles_date
+-rw-r--r--   3 root supergroup          0 2022-05-31 20:31 /user/hive/warehouse/db_test2_date/cp_titles_date/_SUCCESS
+-rw-r--r--   3 root supergroup      2.6 M 2022-05-31 20:31 /user/hive/warehouse/db_test2_date/cp_titles_date/part-m-00000
+-rw-r--r--   3 root supergroup          0 2022-05-31 20:31 /user/hive/warehouse/db_test2_date/cp_titles_date/part-m-00001
+-rw-r--r--   3 root supergroup          0 2022-05-31 20:31 /user/hive/warehouse/db_test2_date/cp_titles_date/part-m-00002
+-rw-r--r--   3 root supergroup      5.1 M 2022-05-31 20:31 /user/hive/warehouse/db_test2_date/cp_titles_date/part-m-00003
+
+root@namenode:/# hdfs dfs -count -h /user/hive/warehouse/db_test2_title
+           2            7              8.8 M /user/hive/warehouse/db_test2_title
+
+ hdfs dfs -ls -h -R /user/hive/warehouse/db_test2_title
+drwxr-xr-x   - root supergroup          0 2022-05-31 20:26 /user/hive/warehouse/db_test2_title/cp_titles_date
+-rw-r--r--   3 root supergroup          0 2022-05-31 20:26 /user/hive/warehouse/db_test2_title/cp_titles_date/_SUCCESS
+-rw-r--r--   3 root supergroup          0 2022-05-31 20:26 /user/hive/warehouse/db_test2_title/cp_titles_date/part-m-00000
+-rw-r--r--   3 root supergroup    443.2 K 2022-05-31 20:26 /user/hive/warehouse/db_test2_title/cp_titles_date/part-m-00001
+-rw-r--r--   3 root supergroup      2.2 M 2022-05-31 20:26 /user/hive/warehouse/db_test2_title/cp_titles_date/part-m-00002
+-rw-r--r--   3 root supergroup        456 2022-05-31 20:26 /user/hive/warehouse/db_test2_title/cp_titles_date/part-m-00003
+-rw-r--r--   3 root supergroup      5.8 M 2022-05-31 20:26 /user/hive/warehouse/db_test2_title/cp_titles_date/part-m-00004
+-rw-r--r--   3 root supergroup    414.5 K 2022-05-31 20:26 /user/hive/warehouse/db_test2_title/cp_titles_date/part-m-00005
+
+hdfs dfs -cat /user/hive/warehouse/db_test2_date/cp_titles_date/part-m-00000 | head -n 10
+Engineer,1995-12-01
+Assistant Engineer,2000-07-31
+Assistant Engineer,1990-02-18
+Engineer,1995-02-18
+Engineer,2000-12-18
+Senior Staff,1993-08-22
+Engineer,1995-04-03
+Technique Leader,2002-07-15
+Technique Leader,1997-10-15
+Engineer,2001-03-19
+
+hdfs dfs -cat /user/hive/warehouse/db_test2_title/cp_titles_date/part-m-00001 | head -n 10
+Assistant Engineer,2000-07-31
+Assistant Engineer,1990-02-18
+Assistant Engineer,9999-01-01
+Assistant Engineer,1992-02-26
+Assistant Engineer,2002-01-02
+Assistant Engineer,1999-01-15
+Assistant Engineer,1999-01-04
+Assistant Engineer,9999-01-01
+Assistant Engineer,1995-06-08
+Assistant Engineer,1991-05-17
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

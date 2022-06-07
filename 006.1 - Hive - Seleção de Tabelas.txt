@@ -1,0 +1,150 @@
+Hive - Seleção de Tabelas
+
+1. Selecionar os 10 primeiros registros da tabela nascimento pelo ano de 2016
+
+use heliton;
+select * 
+from nascimento 
+where ano = 2016 
+limit 10;
++------------------+------------------+------------------------+-----------------+
+| nascimento.nome  | nascimento.sexo  | nascimento.frequencia  | nascimento.ano  |
++------------------+------------------+------------------------+-----------------+
+| Emma             | F                | 19471                  | 2016            |
+| Olivia           | F                | 19327                  | 2016            |
+| Ava              | F                | 16283                  | 2016            |
+| Sophia           | F                | 16112                  | 2016            |
+| Isabella         | F                | 14772                  | 2016            |
+| Mia              | F                | 14415                  | 2016            |
+| Charlotte        | F                | 13080                  | 2016            |
+| Abigail          | F                | 11747                  | 2016            |
+| Emily            | F                | 10957                  | 2016            |
+| Harper           | F                | 10773                  | 2016            |
++------------------+------------------+------------------------+-----------------+
+
+2. Contar a quantidade de nomes de crianças nascidas em 2017
+
+select count(nome) as Qtd_Nomes_2017 
+from nascimento 
+where ano = 2017;
++-----------------+
+| qtd_nomes_2017  |
++-----------------+
+| 32469           |
++-----------------+
+
+3. Contar a quantidade de crianças nascidas em 2017
+
+select sum(frequencia) as Qtd_2017 
+from nascimento 
+where ano = 2017;
++-----------+
+| qtd_2017  |
++-----------+
+| 3546301   |
++-----------+
+
+4. Contar a quantidade de crianças nascidas por sexo no ano de 2015
+
+select sexo, sum(frequencia) as Qtd_2015 
+from nascimento 
+where ano = 2015 
+group by sexo;
++-------+-----------+
+| sexo  | qtd_2015  |
++-------+-----------+
+| F     | 1778883   |
+| M     | 1909804   |
++-------+-----------+
+
+5. Mostrar por ordem de ano decrescente a quantidade de crianças nascidas por sexo
+
+select sexo, ano, sum(frequencia) as Qtd
+from nascimento
+group by sexo, ano
+order by ano desc;
++-------+-------+----------+
+| sexo  |  ano  |   qtd    |
++-------+-------+----------+
+| M     | 2017  | 1834490  |
+| F     | 2017  | 1711811  |
+| M     | 2016  | 1889052  |
+| F     | 2016  | 1763916  |
+| M     | 2015  | 1909804  |
+| F     | 2015  | 1778883  |
++-------+-------+----------+
+
+6. Mostrar por ordem de ano decrescente a quantidade de crianças nascidas por sexo com o nome iniciado com ‘A’
+
+select sexo, ano, sum(frequencia) as Qtd
+from nascimento
+where nome like 'A%'
+group by sexo, ano
+order by ano desc;
++-------+-------+---------+
+| sexo  |  ano  |   qtd   |
++-------+-------+---------+
+| M     | 2017  | 185566  |
+| F     | 2017  | 308551  |
+| M     | 2016  | 191854  |
+| F     | 2016  | 324185  |
+| M     | 2015  | 194722  |
+| F     | 2015  | 329690  |
++-------+-------+---------+
+
+7. Qual nome e quantidade das 5 crianças mais nascidas em 2016
+
+select nome, max(frequencia) as Qtd, ano
+from nascimento
+where ano = 2016
+group by nome, ano
+order by Qtd desc
+limit 5;
++---------+--------+-------+
+|  nome   |  qtd   |  ano  |
++---------+--------+-------+
+| Emma    | 19471  | 2016  |
+| Olivia  | 19327  | 2016  |
+| Noah    | 19082  | 2016  |
+| Liam    | 18198  | 2016  |
+| Ava     | 16283  | 2016  |
++---------+--------+-------+
+
+8. Qual nome e quantidade das 5 crianças mais nascidas em 2016 do sexo masculino e feminino
+
+select nome, sexo, max(frequencia) as Qtd, ano
+from nascimento
+where ano = 2016
+group by nome, sexo, ano
+order by Qtd desc
+limit 5;
++---------+-------+--------+-------+
+|  nome   | sexo  |  qtd   |  ano  |
++---------+-------+--------+-------+
+| Emma    | F     | 19471  | 2016  |
+| Olivia  | F     | 19327  | 2016  |
+| Noah    | M     | 19082  | 2016  |
+| Liam    | M     | 18198  | 2016  |
+| Ava     | F     | 16283  | 2016  |
++---------+-------+--------+-------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
