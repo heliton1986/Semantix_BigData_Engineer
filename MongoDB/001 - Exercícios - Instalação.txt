@@ -1,0 +1,32 @@
+Exercícios - Instalação
+
+1.Instalação do docker e docker-compose
+Acesso: https://docs.docker.com/get-docker/ (Links para um site externo.)
+
+2.Baixar as imagens do mongo e mongo-express
+
+docker pull mongo
+docker pull mongo-express
+
+3.Iniciar o MongoDB através do docker-compose
+
+docker compose docker-compose.yml
+
+4.Listar as imagens em execução
+
+docker images
+
+5.Listar os bancos de dados do MongoDB
+
+ show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+
+6.Visualizar através do Mongo Express os bancos de dados
+Acesso: http://localhost:8081/
+
+
+
+
+
