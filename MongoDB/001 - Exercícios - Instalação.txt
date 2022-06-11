@@ -10,6 +10,7 @@ docker pull mongo-express
 
 3.Iniciar o MongoDB através do docker-compose
 
+docker exec -it mongo bash
 docker compose docker-compose.yml
 
 4.Listar as imagens em execução
@@ -18,7 +19,7 @@ docker images
 
 5.Listar os bancos de dados do MongoDB
 
- show dbs
+show dbs
 admin   0.000GB
 config  0.000GB
 local   0.000GB
