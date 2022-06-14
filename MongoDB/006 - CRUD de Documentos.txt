@@ -1,0 +1,50 @@
+CRUD de Documentos
+
+1. Criar a collection teste no banco de dados seu nome
+
+db.createCollection("teste")
+
+2. Inserir o seguinte documento:
+
+Campo: usuario, valor: Semantix
+Campo: data_acesso, valor: data atual no formato ISODate
+
+db.teste.insertOne(
+{usuario:"Semantix",
+data_acesso: new Date()}
+)
+
+3. Buscar todos os documentos do ano >= 2020
+
+db.teste.find({data_acesso: {$gte: new Date(2020)}})
+{ "_id" : ObjectId("62a62600567fd21e538362c6"), "usuario" : "Semantix", "data_acesso" : ISODate("2022-06-12T17:44:32.626Z") }
+
+4. Atualizar o campo “data_acesso” para timestamp com o valor da atualização do 
+usuario Semantix
+
+db.teste.updateOne(
+{usuario:"Semantix"},
+{$currentDate: { data_acesso: { $type: "timestamp" }}
+})
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+
+5. Buscar todos os documentos
+
+db.teste.find()
+{ "_id" : ObjectId("62a62600567fd21e538362c6"), "usuario" : "Semantix", "data_acesso" : Timestamp(1655056334, 1) }
+
+6. Deletar o documento criado pelo id
+
+db.teste.deleteOne(
+{"_id" : ObjectId("62a62480c48ea4969886659a")}
+)
+{ "acknowledged" : true, "deletedCount" : 1 }
+
+7. Deletar a collection
+
+db.teste.drop()
+true
+
+
+
+
