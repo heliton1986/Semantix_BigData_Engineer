@@ -1,0 +1,69 @@
+Exercícios - Configuração
+
+1. Visualizar todos os parâmetros de configuração
+
+config get *
+
+2. Verificar o parâmetro “appendonly”
+
+config get appendonly
+1) "appendonly"
+2) "yes"
+
+3. Remover a persistência dos dados, alterando o parâmetro “appendonly” para “no”
+
+config set appendonly no
+OK
+
+4. Verificar o parâmetro “save”
+
+config get save
+1) "save"
+2) "3600 1 300 100 60 10000"
+
+5. Adicionar a persistência dos dados, para a cada 2 minutos (120 segundos) 
+se pelo menos 500 chaves forem alteradas, adicionando o parâmetro “save” para
+ “120 500”
+
+config set save '120 500'
+OK
+
+6. Verificar os parâmetros “maxmemory*”
+
+config get maxmemory*
+ 1) "maxmemory-clients"
+ 2) "0"
+ 3) "maxmemory-policy"
+ 4) "noeviction"
+ 5) "maxmemory-eviction-tenacity"
+ 6) "10"
+ 7) "maxmemory"
+ 8) "0"
+ 9) "maxmemory-samples"
+10) "5"
+
+7. Permitir que o Redis remova automaticamente os dados antigos à medida
+que você adiciona novos dados,  com uso da politica “allkeys-lru”, quando 
+chegar a 1mb de memória.
+
+config set maxmemory-policy allkeys-lru
+OK
+
+config set maxmemory 1mb
+OK
+
+config get maxmemory*
+ 1) "maxmemory-clients"
+ 2) "0"
+ 3) "maxmemory-policy"
+ 4) "allkeys-lru"
+ 5) "maxmemory-eviction-tenacity"
+ 6) "10"
+ 7) "maxmemory"
+ 8) "1048576"
+ 9) "maxmemory-samples"
+10) "5"
+
+
+
+

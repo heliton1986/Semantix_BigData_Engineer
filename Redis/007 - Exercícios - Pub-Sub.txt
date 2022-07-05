@@ -1,0 +1,58 @@
+Exercícios - Pub/Sub
+
+1. Criar um assinante para receber as mensagens do canal noticias:sp
+
+subscribe noticias:sp
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "noticias:sp"
+3) (integer) 1
+
+2. Criar um editor para enviar as seguintes mensagens no canal noticias:sp
+
+Msg 1
+Msg 2
+Msg 3
+
+publish noticias:sp 'Msg 1'
+(integer) 1
+
+publish noticias:sp 'Msg 2'
+(integer) 1
+
+publish noticias:sp 'Msg 3'
+(integer) 1
+
+3. Cancelar o assinante do canal noticias:sp
+
+ unsubscribe noticias:sp
+1) "unsubscribe"
+2) "noticias:sp"
+3) (integer) 0
+
+4. Criar um assinante para receber as mensagens dos canais com o padrão noticias:*
+
+psubscribe noticias:*
+Reading messages... (press Ctrl-C to quit)
+1) "psubscribe"
+2) "noticias:*"
+3) (integer) 1
+
+5. Criar um editor para enviar as seguintes mensagens no canal noticias:rj
+
+Msg 4
+Msg 5
+Msg 6
+
+publish noticias:rj 'Msg 4'
+(integer) 1
+
+publish noticias:rj 'Msg 5'
+(integer) 1
+
+publish noticias:rj 'Msg 6'
+(integer) 1
+
+
+
+
